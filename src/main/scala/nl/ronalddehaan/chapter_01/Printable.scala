@@ -1,5 +1,8 @@
 package nl.ronalddehaan.chapter_01
 
+import cats._
+import cats.implicits._
+
 trait Printable[A] {
   def format(value: A): String
 }
@@ -33,9 +36,35 @@ object PrintableDemo extends App {
 
   val cat = Cat("Felix", 42, "black and white")
 
-  // print using Printable
+  // print using Printable object
   Printable.print(cat)
 
-  // print using PrintableSyntax
+  // print using printable syntax
   cat.print
+
+
+  // using cat's Show
+  implicit val catShow: Show[Cat] = Show.show(c => s"${c.name} is a ${c.age} year old ${c.color} cat.")
+  println(cat.show)
+
+
+  val cat1 = Cat("Garfield", 38, "orange and black")
+  val cat2 = Cat("Heathcliff", 38, "orange and black")
+
+  val optionCat1 = Option(cat1)
+  val optionCat2 = Option.empty[Cat]
+
+  implicit val catEq: Eq[Cat] =
+    Eq.instance[Cat] {
+      (cat1, cat2) =>
+          cat1.name  === cat2.name &&
+          cat1.age   === cat2.age &&
+          cat1.color === cat2.color
+    }
+
+  assert(!(cat1 === cat2))
+  assert(cat1 =!= cat2)
+
+  assert(!(optionCat1 === optionCat2))
+  assert(optionCat1 =!= optionCat2)
 }
