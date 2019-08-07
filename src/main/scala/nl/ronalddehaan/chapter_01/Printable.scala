@@ -31,23 +31,22 @@ object PrintableSyntax {
 }
 
 object PrintableDemo extends App {
-  import PrintableInstances._
-  import PrintableSyntax._
 
   val cat = Cat("Felix", 42, "black and white")
 
   // print using Printable object
+  import PrintableInstances._
   Printable.print(cat)
 
   // print using printable syntax
+  import PrintableSyntax._
   cat.print
-
 
   // using cat's Show
   implicit val catShow: Show[Cat] = Show.show(c => s"${c.name} is a ${c.age} year old ${c.color} cat.")
   println(cat.show)
 
-
+  // Doing some equality checks by implementing an instance of Eq
   val cat1 = Cat("Garfield", 38, "orange and black")
   val cat2 = Cat("Heathcliff", 38, "orange and black")
 
